@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import softdreams.website.project_softdreams_restful_api.domain.Product;
@@ -124,6 +126,11 @@ public class IProductService implements ProductService {
     @Override
     public List<Product> filterProductByNameAsus(String keyword) {
         return this.productRepository.filterProductByAsus(keyword);
+    }
+
+    @Override
+    public Page<Product> fetchAllProductPage(Pageable pageable) {
+        return this.productRepository.findAll(pageable);
     }
     
 }
