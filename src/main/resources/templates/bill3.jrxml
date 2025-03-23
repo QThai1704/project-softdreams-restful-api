@@ -1,0 +1,97 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Blank_A4" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="400f8587-9a57-4b9a-aef5-379f01ded10f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="648"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="352"/>
+	<parameter name="receiverName" class="java.lang.String"/>
+	<parameter name="totalPrice" class="java.lang.Double"/>
+	<parameter name="discount" class="java.lang.Double"/>
+	<parameter name="payment" class="java.lang.Double"/>
+	<parameter name="personPay" class="java.lang.Double"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="nameProduct" class="java.lang.String"/>
+	<field name="priceProduct" class="java.lang.Double"/>
+	<field name="quantity" class="java.lang.Long"/>
+	<field name="priceOrderDetail" class="java.lang.Double"/>
+	<background height="1" splitType="Stretch"/>
+	<title height="48" splitType="Stretch">
+		<element kind="staticText" uuid="bb0f5e9c-fa21-4e65-aaf7-61d01ecd9b4e" x="0" y="0" width="555" height="48" fontName="SansSerif" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Invoice]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="75" splitType="Stretch">
+		<element kind="staticText" uuid="280603b7-a861-4a15-9420-aa287978ce64" x="380" y="10" width="80" height="20" vTextAlign="Middle">
+			<text><![CDATA[Purchaser]]></text>
+		</element>
+		<element kind="textField" uuid="db94073f-61ee-41a8-9ffe-89da9035fe0e" x="460" y="10" width="112" height="20">
+			<expression><![CDATA[$P{receiverName}]]></expression>
+		</element>
+		<element kind="staticText" uuid="8a89ae2d-54b5-4743-acfd-3b638a81eb9d" x="-21" y="33" width="230" height="30" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Product]]></text>
+		</element>
+		<element kind="staticText" uuid="0a437117-4090-4255-9104-a9c2035c57aa" x="209" y="33" width="130" height="30" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Unit price]]></text>
+		</element>
+		<element kind="staticText" uuid="a34b8303-e93f-45d0-9250-edc5fdd25c8e" x="339" y="33" width="80" height="30" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Quantity]]></text>
+		</element>
+		<element kind="staticText" uuid="e8774564-d20a-4b26-86ec-2bcba5cd9b5c" x="419" y="33" width="154" height="30" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Total amount]]></text>
+		</element>
+		<element kind="line" uuid="6d7b16b1-2518-4ceb-b02a-0ad16d64e1f7" x="-19" y="74" width="593" height="1"/>
+	</pageHeader>
+	<detail>
+		<band height="51" splitType="Stretch">
+			<element kind="textField" uuid="e62e85e8-e691-4ac9-a361-cc35edcfe7e6" x="-18" y="10" width="230" height="30">
+				<expression><![CDATA[$F{nameProduct}]]></expression>
+			</element>
+			<element kind="textField" uuid="063e7623-cce8-4834-96c2-9914b1b7028f" x="212" y="10" width="130" height="30">
+				<expression><![CDATA[$F{priceProduct}]]></expression>
+			</element>
+			<element kind="textField" uuid="93447297-3f4e-4b7c-a9fe-ac08283166dd" x="342" y="10" width="80" height="30">
+				<expression><![CDATA[$F{quantity}]]></expression>
+			</element>
+			<element kind="textField" uuid="f921e714-458c-41a3-800f-5b33d4b4defe" x="422" y="10" width="152" height="30">
+				<expression><![CDATA[$F{priceOrderDetail}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="177" splitType="Stretch">
+		<element kind="line" uuid="7c1f38a1-f569-4d5c-b101-9675b490b696" x="-18" y="0" width="593" height="1"/>
+		<element kind="staticText" uuid="85d2dab2-6c5b-4c76-9ec8-5400b8bcd6bc" x="-21" y="10" width="230" height="40" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[TOTAL PRICE]]></text>
+		</element>
+		<element kind="textField" uuid="42470b71-af62-4771-a9b0-7ee9eb6f1bb5" x="423" y="90" width="152" height="40">
+			<expression><![CDATA[$P{payment}]]></expression>
+		</element>
+		<element kind="textField" uuid="ebce4351-b427-401c-a3ff-1948fc43fb02" x="423" y="131" width="152" height="40">
+			<expression><![CDATA[$P{personPay}]]></expression>
+		</element>
+		<element kind="textField" uuid="679f5b06-0a35-4493-a327-b6ce9ac6b428" x="423" y="50" width="152" height="40">
+			<expression><![CDATA[$P{discount}]]></expression>
+		</element>
+		<element kind="textField" uuid="ce2e3a16-e407-4ba8-bc71-1eadda2690b3" x="423" y="10" width="152" height="40">
+			<expression><![CDATA[$P{totalPrice}]]></expression>
+		</element>
+		<element kind="staticText" uuid="b76b2318-ad22-46c4-9596-daa30074d609" x="-21" y="50" width="230" height="40" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[DISCOUNT]]></text>
+		</element>
+		<element kind="staticText" uuid="8e64dfec-654c-4d26-8ccb-58c78ff45b95" x="-21" y="130" width="230" height="40" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[PERSON PAY]]></text>
+		</element>
+		<element kind="staticText" uuid="17a98e81-64f9-4f2f-baf1-15836e456b15" x="-22" y="90" width="230" height="40" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[PAYMENT]]></text>
+		</element>
+	</columnFooter>
+	<pageFooter height="73" splitType="Stretch">
+		<element kind="line" uuid="047d6db4-565a-4503-80b6-7447c681fecf" x="-18" y="0" width="593" height="1"/>
+		<element kind="staticText" uuid="f6e7d718-451a-4724-a1ed-717bbf4e00e0" x="-20" y="9" width="594" height="54" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[CẢM ƠN QUÝ KHÁCH VÀ HẸN GẶP LẠI
+Liên hệ: 0343282228	Website: http://virusngoccream.com]]></text>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>
