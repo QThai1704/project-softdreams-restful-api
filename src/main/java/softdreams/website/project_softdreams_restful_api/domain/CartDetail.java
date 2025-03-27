@@ -1,6 +1,9 @@
 package softdreams.website.project_softdreams_restful_api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +29,7 @@ public class CartDetail {
     private long quantity;
     private double price;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "cart_id")
     private Cart cart;
 

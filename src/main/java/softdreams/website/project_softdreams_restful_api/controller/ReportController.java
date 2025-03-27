@@ -1,13 +1,6 @@
 package softdreams.website.project_softdreams_restful_api.controller;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +18,7 @@ public class ReportController {
     @Autowired
     private BillService billService;
 
-    @GetMapping("/report/{id}")
+    @GetMapping({"/admin/report/{id}"})
     public ResponseEntity<byte[]> exportReport(@PathVariable("id") long id) throws Exception {
         byte[] pdfBytes = billService.exportBillToPDF(id);
         HttpHeaders headers = new HttpHeaders();

@@ -2,7 +2,10 @@ package softdreams.website.project_softdreams_restful_api.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,5 +35,6 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart")
+    @JsonIgnore
     List<CartDetail> cartDetails;
 }

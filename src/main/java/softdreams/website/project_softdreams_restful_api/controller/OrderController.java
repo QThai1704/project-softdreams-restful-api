@@ -35,35 +35,35 @@ public class OrderController {
     @Autowired
     private IOrderDetailService orderDetailService;
     
-    @PostMapping("/order")
+    @PostMapping({"/admin/order"})
     public ResponseEntity<OrderRes> createOrderApi(@RequestBody Order order) {
         Order newOrder = this.orderService.createOrder(order);
         OrderRes orderRes = this.orderService.resCreateOrder(newOrder);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderRes);
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping({"/order/{id}", "/admin/order/{id}"})
     public ResponseEntity<OrderRes> getOrderByIdApi(@PathVariable("id") long id) {
         Order order = this.orderService.fetchOrderById(id);
         OrderRes orderRes = this.orderService.resFetchOrderById(order);
         return ResponseEntity.ok().body(orderRes);
     }
     
-    @GetMapping("/order")
+    @GetMapping({"/order", "/admin/order"})
     public ResponseEntity<List<OrderRes>> getAllOrderApi() {
         List<Order> orders = this.orderService.getAllOrders();
         List<OrderRes> orderResList = this.orderService.resAllOrders(orders);
         return ResponseEntity.ok().body(orderResList);
     }
 
-    @PutMapping("/order")
+    @PutMapping({"/order", "/admin/order"})
     public ResponseEntity<OrderRes> updateOrderApi(@RequestBody Order order) {
         Order updateOrder = this.orderService.updateOrder(order);
         OrderRes orderRes = this.orderService.resUpdateOrder(updateOrder);
         return ResponseEntity.ok().body(orderRes);
     }
 
-    @DeleteMapping("/order/{id}")
+    @DeleteMapping("/admin/order/{id}")
     public ResponseEntity<String> deleteOrderApi(@PathVariable("id") long id) {
         // Bug: Can kiem tra order co id co ton tai hay khong roi moi xoa
         this.orderService.deleteOrder(id);
@@ -72,9 +72,11 @@ public class OrderController {
                 .body("Xoa thanh cong");
     }
 
-    @GetMapping("/order-detail/{id-order}")
+    @GetMapping({"admin/order-detail/{id-order}"})
     public ResponseEntity<List<OrderDetail>> getOrderDetailByOrderIdApi(@PathVariable("id-order") long id) {
         List<OrderDetail> orderDetails = this.orderDetailService.fetchOrderDetailByOrderId(id);
         return ResponseEntity.ok().body(orderDetails);
     }
+
+    
 }

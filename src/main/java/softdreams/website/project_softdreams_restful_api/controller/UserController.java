@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.UserReqCreate;
 import softdreams.website.project_softdreams_restful_api.dto.request.UserReqUpdate;
@@ -32,7 +33,7 @@ public class UserController {
 
     @PostMapping("/user")
     @ApiMessage(message = "Thêm mới user thành công!")
-    public ResponseEntity<UserRes> postMethodName(@RequestBody UserReqCreate userReq) {
+    public ResponseEntity<UserRes> postMethodName(@Valid @RequestBody UserReqCreate userReq) {
         User newUser = this.userService.createUser(userReq);
         UserRes userRes = this.userService.ResUserCreate(newUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(userRes);
@@ -54,7 +55,7 @@ public class UserController {
 
     @PutMapping("/user")
     @ApiMessage(message = "Cập nhật user thành công!")
-    public ResponseEntity<UserRes> updateUser(@RequestBody UserReqUpdate userReqUpdate) {
+    public ResponseEntity<UserRes> updateUser(@Valid @RequestBody UserReqUpdate userReqUpdate) {
         UserRes userRes = this.userService.ResUserUpdate(userReqUpdate);
         return ResponseEntity.status(HttpStatus.OK).body(userRes);
     }

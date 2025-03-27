@@ -39,7 +39,7 @@ public class UploadFile {
     }
 
     public String storeFile(MultipartFile file, String folder) throws URISyntaxException, IOException {
-        String fileName = System.currentTimeMillis() + file.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         URI uri = new URI(baseUri + folder + "/" + fileName);
         Path path = Paths.get(uri);
         try (InputStream inputStream = file.getInputStream()) {
