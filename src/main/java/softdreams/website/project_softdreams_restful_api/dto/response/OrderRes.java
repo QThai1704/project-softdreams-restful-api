@@ -9,6 +9,7 @@ import softdreams.website.project_softdreams_restful_api.util.constants.StatusEn
 @Setter
 public class OrderRes {
     private long id;
+    private String orderCode;
     private double totalPrice;
     private String receiverName;
     private String receiverAddress;

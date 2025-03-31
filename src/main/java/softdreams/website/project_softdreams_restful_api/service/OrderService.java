@@ -25,5 +25,9 @@ public interface OrderService {
     OrderRes resUpdateOrder(Order order);
 
     ResponseEntity<Void> deleteOrder(long id);
+    
+    List<Order> findByOrderCode(String orderCode);
+
+    OrderRes convertOrderToOrderRes(Order order);
 
 }

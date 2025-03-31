@@ -148,7 +148,7 @@ public class ProductController {
 
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // Hoặc IMAGE_PNG tùy định dạng
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
     }
         

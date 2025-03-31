@@ -39,11 +39,7 @@ public class SecurityConfig {
             .httpBasic(hp -> hp.disable())
             .authorizeHttpRequests(
                             authz -> authz
-                                .requestMatchers(
-                                    "/**", "/api/v1/auth/**", 
-                                    "/api/v1/product/{id}",
-                                    "/api/v1/filterProduct/{keyword}",
-                                    "/api/v1/product").permitAll()
+                                .requestMatchers("/", "/api/v1/auth/**", "/api/v1/admin/**").permitAll()
                                 // .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 // .requestMatchers("/api/v1/**").hasRole("USER")
                                 .anyRequest().authenticated())

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import softdreams.website.project_softdreams_restful_api.domain.Cart;
 import softdreams.website.project_softdreams_restful_api.domain.User;
+import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {

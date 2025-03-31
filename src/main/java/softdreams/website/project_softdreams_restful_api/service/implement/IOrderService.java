@@ -105,11 +105,13 @@ public class IOrderService implements OrderService {
         return ResponseEntity.ok().body(null);
     }
 
-    OrderRes convertOrderToOrderRes(Order order) {
+    @Override
+    public OrderRes convertOrderToOrderRes(Order order) {
         OrderRes orderRes = new OrderRes();
         OrderRes.User_OrderRes user = new OrderRes.User_OrderRes();
         List<OrderDetail> orderDetails = this.orderDetailRepository.findAllOrderDetailsByOrderId(order.getId());
         orderRes.setId(order.getId());
+        orderRes.setOrderCode(order.getOrderCode());
         orderRes.setTotalPrice(order.getTotalPrice());
         orderRes.setReceiverName(order.getReceiverName());
         orderRes.setReceiverAddress(order.getReceiverAddress());
@@ -137,5 +139,11 @@ public class IOrderService implements OrderService {
             return orderDetail;
         }).collect(Collectors.toList()));
         return orderRes;
+    }
+
+    @Override
+    public List<Order> findByOrderCode(String orderCode) {
+        List<Order> order = this.orderRepository.findByOrderCode(orderCode);
+        return order;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import softdreams.website.project_softdreams_restful_api.domain.Cart;
@@ -78,5 +79,10 @@ public class OrderController {
         return ResponseEntity.ok().body(orderDetails);
     }
 
-    
+    @GetMapping({"/admin/order-code"})
+    public ResponseEntity<List<OrderRes>> getOrderByOrderCode(@RequestParam("orderCode") String orderCode) {
+        List<Order> order = this.orderService.findByOrderCode(orderCode);
+        List<OrderRes> orderResList = this.orderService.resAllOrders(order);
+        return ResponseEntity.ok().body(orderResList);
+    }
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import jakarta.servlet.http.HttpSession;
 import softdreams.website.project_softdreams_restful_api.domain.Product;
 import softdreams.website.project_softdreams_restful_api.dto.request.ProductReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.ProductRes;

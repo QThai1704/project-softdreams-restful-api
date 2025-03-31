@@ -3,13 +3,13 @@ package softdreams.website.project_softdreams_restful_api.controller;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import softdreams.website.project_softdreams_restful_api.domain.Cart;
 import softdreams.website.project_softdreams_restful_api.domain.CartDetail;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.CartReq;
+import softdreams.website.project_softdreams_restful_api.dto.request.ReceiverReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
 import softdreams.website.project_softdreams_restful_api.service.CartService;
 import softdreams.website.project_softdreams_restful_api.service.OrderDetailService;
@@ -66,12 +65,12 @@ public class CartController {
         return ResponseEntity.ok().body(cartDetailRes);
     }
 
-    // Kiêm tra lại hàm
+    // // Kiêm tra lại hàm
     // @GetMapping("/checkout")
     // public String getCheckOutPage(HttpServletRequest request) {
     //     String email = SecurityContextHolder.getContext().getAuthentication().getName();
-    //     User currentUser = this.userService.fetchByEmail(email);
-    //     Cart cart = this.productService.fetchByUser(currentUser);
+    //     User currentUser = this.userService.findUserByEmail(email).get();
+    //     Cart cart = this.cartService.fetchByUser(currentUser);
 
     //     List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
 
@@ -86,32 +85,32 @@ public class CartController {
     //     return "client/cart/checkout";
     // }
 
-    // @PostMapping("/confirm-checkout")
-    // public String getCheckOutPage(@ModelAttribute("cart") Cart cart) {
-    //     List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
-    //     this.productService.handleUpdateCartBeforeCheckout(cartDetails);
-    //     return "redirect:/checkout";
-    // }
+    @PostMapping("/confirm-checkout")
+    public ResponseEntity<String> getCheckOutPage(@RequestBody() List<CartDetailRes.CartDetailList> cartDetailList) {
+        // List<CartDetailRes.CartDetailList> cartDetailList = cartDetailRes == null ? new ArrayList<CartDetailRes.CartDetailList>() : cartDetailRes.getCartDetailList();
+        this.cartService.handleUpdateCartBeforeCheckout(cartDetailList);
+        return ResponseEntity.ok().body("Kiểm tra giỏ hàng thành công"); 
+    }
 
-    // @PostMapping("/place-order")
-    // public String handlePlaceOrder(HttpServletRequest request,
-    //         @RequestParam("receiverName") String receiverName,
-    //         @RequestParam("receiverAddress") String receiverAddress,
-    //         @RequestParam("receiverPhone") String receiverPhone,
-    //         @RequestParam("totalPrice") String totalPrice) throws NumberFormatException, UnsupportedEncodingException {
-    //     User currentUser = new User();
-    //     HttpSession session = request.getSession(false);
-    //     long id = (long) session.getAttribute("id");
-    //     currentUser.setId(id);
-    //     ReceiverDTO newReceiverDTO = ReceiverDTO.builder()
-    //             .receiverName(receiverName)
-    //             .receiverAddress(receiverAddress)
-    //             .receiverPhone(receiverPhone)
-    //             .build();
-    //     final String uuid = UUID.randomUUID().toString().replace("-", "");
-    //     this.productService.handlePlaceOrder(currentUser, newReceiverDTO, session, uuid);
-    //     return "redirect:/thanks";
-    // }
+    // Đặt hàng
+    @PostMapping("/place-order")
+    public ResponseEntity<String> handlePlaceOrderApi(
+            @RequestParam("receiverName") String receiverName,
+            @RequestParam("receiverAddress") String receiverAddress,
+            @RequestParam("receiverPhone") String receiverPhone,
+            @RequestParam("totalPrice") String totalPrice) throws NumberFormatException, UnsupportedEncodingException {
+        User currentUser = new User();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        currentUser = this.userService.findUserByEmail(email).get();
+        ReceiverReq newReceiverReq = ReceiverReq.builder()
+                .receiverName(receiverName)
+                .receiverAddress(receiverAddress)
+                .receiverPhone(receiverPhone)
+                .build();
+        final String uuid = UUID.randomUUID().toString().replace("", "");
+        this.cartService.handlePlaceOrder(currentUser, newReceiverReq, 5, uuid);
+        return ResponseEntity.ok().body("Đặt hàng thành công");
+    }
 
     // @GetMapping("/thanks")
     // public String getThankYouPage() {
@@ -125,10 +124,11 @@ public class CartController {
     //     return "client/cart/thanks";
     // }
 
-    // @PostMapping("/delete-cart-product/{id}")
-    // public String postDeleteCartProduct(@PathVariable long id, HttpServletRequest request) {
-    //     HttpSession session = request.getSession();
-    //     this.productService.deleteCartProduct(id, session);
-    //     return "redirect:/cart";
-    // }
+    @PostMapping("/delete-cart-product")
+    public ResponseEntity<String> postDeleteCartProduct(@RequestParam("id") long id) {
+        this.cartService.deleteCartProduct(id);
+        return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_PLAIN) 
+        .body("Xóa sản phẩm khỏi giỏ hàng thành công");
+    }
 }
