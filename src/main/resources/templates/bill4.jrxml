@@ -12,7 +12,7 @@
 	<query language="sql"><![CDATA[]]></query>
 	<field name="nameProduct" class="java.lang.String"/>
 	<field name="priceProduct" class="java.lang.Double"/>
-	<field name="quantity" class="java.lang.Long"/>
+	<field name="quantity" class="java.lang.Integer"/>
 	<field name="priceOrderDetail" class="java.lang.Double"/>
 	<background height="1" splitType="Stretch"/>
 	<title height="48" splitType="Stretch">
@@ -52,7 +52,7 @@
 				<expression><![CDATA[$F{priceProduct}]]></expression>
 			</element>
 			<element kind="textField" uuid="93447297-3f4e-4b7c-a9fe-ac08283166dd" x="342" y="10" width="80" height="30">
-				<expression><![CDATA[$F{quantity}]]></expression>
+				<expression><![CDATA[$P{quantity}]]></expression>
 			</element>
 			<element kind="textField" uuid="f921e714-458c-41a3-800f-5b33d4b4defe" x="422" y="10" width="152" height="30">
 				<expression><![CDATA[$F{priceOrderDetail}]]></expression>
@@ -88,8 +88,7 @@
 	</columnFooter>
 	<pageFooter height="73" splitType="Stretch">
 		<element kind="line" uuid="047d6db4-565a-4503-80b6-7447c681fecf" x="-18" y="0" width="593" height="1"/>
-		<element kind="staticText" uuid="f6e7d718-451a-4724-a1ed-717bbf4e00e0" x="-20" y="9" width="594" height="54" 
-				hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="f6e7d718-451a-4724-a1ed-717bbf4e00e0" x="-20" y="9" width="594" height="54" hTextAlign="Center" vTextAlign="Middle">
 			<text><![CDATA[CẢM ƠN QUÝ KHÁCH VÀ HẸN GẶP LẠI
 Liên hệ: 0343282228	Website: http://virusngoccream.com]]></text>
 		</element>

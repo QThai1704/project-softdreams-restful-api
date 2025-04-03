@@ -16,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     
     @Query(value= "SELECT * FROM orders WHERE order_code = :orderCode", nativeQuery = true)
     List<Order> findByOrderCode(@Param("orderCode") String orderCode);
+
+    List<Order> findByUserId(long id);
 }

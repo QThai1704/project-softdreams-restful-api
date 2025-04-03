@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpSession;
 import softdreams.website.project_softdreams_restful_api.domain.Cart;
 import softdreams.website.project_softdreams_restful_api.domain.CartDetail;
+import softdreams.website.project_softdreams_restful_api.domain.OrderDetail;
 import softdreams.website.project_softdreams_restful_api.domain.Product;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.ProductReq;
@@ -19,10 +19,11 @@ import softdreams.website.project_softdreams_restful_api.dto.response.ProductRes
 import softdreams.website.project_softdreams_restful_api.dto.response.ResPagination;
 import softdreams.website.project_softdreams_restful_api.repository.CartDetailRepository;
 import softdreams.website.project_softdreams_restful_api.repository.CartRepository;
+import softdreams.website.project_softdreams_restful_api.repository.OrderDetailRepository;
 import softdreams.website.project_softdreams_restful_api.repository.ProductRepository;
 import softdreams.website.project_softdreams_restful_api.repository.UserRepository;
 import softdreams.website.project_softdreams_restful_api.service.ProductService;
-import softdreams.website.project_softdreams_restful_api.service.UserService;
+
 
 @Service
 public class IProductService implements ProductService {
@@ -38,6 +39,9 @@ public class IProductService implements ProductService {
 
     @Autowired
     private CartDetailRepository cartDetailRepository;
+
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
     @Override
     public Product createProduct(ProductReq productReq) {
@@ -161,6 +165,7 @@ public class IProductService implements ProductService {
         return resPagination;
     }
 
+    // Logic nghiệp vụ chưa đúng
     @Override
     @Transactional
     public void deleteProductNativeQuery(long id) {

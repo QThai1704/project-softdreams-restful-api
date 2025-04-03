@@ -34,14 +34,14 @@ public class BillService {
 
         List<BillItem> items = orderById.getOrderDetails().stream().map(orderDetail -> {
             BillItem item = new BillItem();
-            item.setNameProduct(orderDetail.getProduct().getName());
-            item.setPriceProduct(orderDetail.getProduct().getPrice());
+            item.setNameProduct(orderDetail.getNameProduct());
+            item.setPriceProduct(orderDetail.getPriceProduct());
             item.setQuantity(orderDetail.getQuantity());
             item.setPriceOrderDetail(orderDetail.getPrice());
             return item;
         }).collect(Collectors.toList());
 
-        double total = items.stream().mapToDouble(BillItem::getPriceOrderDetail).sum();
+        double total = orderById.getTotalPrice();
         double discount = 0;
         double personPay = total - discount;
         BillRes bill = new BillRes();

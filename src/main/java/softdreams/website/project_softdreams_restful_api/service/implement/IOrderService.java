@@ -128,13 +128,10 @@ public class IOrderService implements OrderService {
             orderDetail.setQuantity(orderDetailItem.getQuantity());
             orderDetail.setPrice(orderDetailItem.getPrice());
 
-            // Xử lý product
-            Product productById = this.productRepository.findById(orderDetailItem.getProduct().getId()).get();
             OrderRes.OrderDetail_OrderRes.Product_OrderRes product = new OrderRes.OrderDetail_OrderRes.Product_OrderRes();
-            product.setId(productById.getId());
-            product.setName(productById.getName());
-            product.setPrice(productById.getPrice());
-            product.setImage(productById.getImage());
+            product.setName(orderDetailItem.getNameProduct());
+            product.setPrice(orderDetailItem.getPriceProduct());
+            product.setImage(orderDetailItem.getImgProduct());
             orderDetail.setProduct(product);
             return orderDetail;
         }).collect(Collectors.toList()));

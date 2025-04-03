@@ -24,10 +24,8 @@ public class UserReqCreate {
     @StrongPassword(message = "Mật khẩu không đủ mạnh")
     private String password;
 
-    @NotBlank(message = "Số điện thoại không được trống")
     @Pattern(regexp = "^(\\+84|0)[35789][0-9]{8}$", message = "Định dạng số điện thoại không đúng")
     private String phone;
-
     private String address;
     private String avatar;
 

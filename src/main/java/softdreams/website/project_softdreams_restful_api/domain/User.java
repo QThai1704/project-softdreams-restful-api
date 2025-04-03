@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,19 +33,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Full name is required")
+    @NotBlank(message = "Họ và tên không được trống")
     private String fullName;
     
-    @NotBlank(message = "Email is required")
+    @NotBlank(message = "Email is không được trống")
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
     private String address;
 
-    @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^(\\+84|0)[35789][0-9]{8}$", message = "Phone is not format")
+    @Pattern(regexp = "^(\\+84|0)[35789][0-9]{8}$", message = "Số điện thoại không hợp lệ")
     private String phone;
     private String avatar;
+
+    private String refreshToken;
     
 
     @ManyToOne
@@ -54,7 +57,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
-    @OneToOne(mappedBy = "user")
-    @JsonIgnore
-    private Cart cart;
+    // @OneToOne(mappedBy = "user")
+    // @JsonIgnore
+    // private Cart cart;
 }

@@ -17,7 +17,7 @@ public class CustomStrongValidator implements ConstraintValidator<StrongPassword
         if(!password.matches(regexp)){
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    "Mật khẩu bao gồm ít nhất một ký tự viết hoa, ký tự số và không chứa khoảng trắng.")
+                    "Mật khẩu phải có ít nhất 8 ký tự trong đó một ký tự viết hoa, ký tự số và không chứa khoảng trắng.")
                     .addConstraintViolation();
             return false;
         }

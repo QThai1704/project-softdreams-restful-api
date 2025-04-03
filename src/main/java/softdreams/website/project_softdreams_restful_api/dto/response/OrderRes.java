@@ -36,7 +36,6 @@ public class OrderRes {
         @Getter
         @Setter
         public static class Product_OrderRes {
-            private long id;
             private String name;
             private double price;
             private String image;

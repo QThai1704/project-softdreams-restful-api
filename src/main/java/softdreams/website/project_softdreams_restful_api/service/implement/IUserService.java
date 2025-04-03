@@ -6,12 +6,23 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import softdreams.website.project_softdreams_restful_api.domain.Cart;
+import softdreams.website.project_softdreams_restful_api.domain.CartDetail;
+import softdreams.website.project_softdreams_restful_api.domain.Order;
+import softdreams.website.project_softdreams_restful_api.domain.OrderDetail;
 import softdreams.website.project_softdreams_restful_api.domain.Role;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.UserReqCreate;
 import softdreams.website.project_softdreams_restful_api.dto.request.UserReqUpdate;
 import softdreams.website.project_softdreams_restful_api.dto.response.UserRes;
+import softdreams.website.project_softdreams_restful_api.dto.response.UserSelectForAdmin;
+import softdreams.website.project_softdreams_restful_api.exception.CustomException;
+import softdreams.website.project_softdreams_restful_api.repository.CartDetailRepository;
+import softdreams.website.project_softdreams_restful_api.repository.CartRepository;
+import softdreams.website.project_softdreams_restful_api.repository.OrderDetailRepository;
+import softdreams.website.project_softdreams_restful_api.repository.OrderRepository;
 import softdreams.website.project_softdreams_restful_api.repository.RoleRepository;
 import softdreams.website.project_softdreams_restful_api.repository.UserRepository;
 import softdreams.website.project_softdreams_restful_api.service.UserService;
@@ -28,8 +39,24 @@ public class IUserService implements UserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private CartDetailRepository cartDetailRepository;
+
     @Override
-    public User createUser(UserReqCreate userReq) {
+    public User createUser(UserReqCreate userReq) throws CustomException {
+        // Kiểm tra email đã tồn tại chưa
+        if (this.isExistEmail(userReq.getEmail())) {
+            throw new CustomException("Email đã tồn tại!");
+        }
         User newUser = new User();
         newUser.setFullName(userReq.getFullName());
         newUser.setPassword(passwordEncoder.encode(userReq.getPassword()));
@@ -110,10 +137,15 @@ public class IUserService implements UserService{
     }
 
     @Override
-    public User updateUser(UserReqUpdate userReqUpdate) {
+    public User updateUser(UserReqUpdate userReqUpdate) throws CustomException {
         User currentUser = this.findUserById(userReqUpdate.getId()).get();
         if (currentUser == null) {
-            throw new UnsupportedOperationException("User not found");
+            throw new CustomException("Không tìm thấy người dùng!");
+        }
+        if(!currentUser.getEmail().equals(userReqUpdate.getEmail())) {
+            if (this.isExistEmail(userReqUpdate.getEmail())) {
+                throw new CustomException("Email đã tồn tại!");
+            }
         }
         Role role = this.roleRepository.findByName(userReqUpdate.getRole()).get();
         currentUser.setFullName(userReqUpdate.getFullName());
@@ -127,9 +159,29 @@ public class IUserService implements UserService{
     }
 
     @Override
-    public UserRes ResUserUpdate(UserReqUpdate userReqUpdate) {
-        User updatedUser = this.updateUser(userReqUpdate);
-        // Phản hồi
+    public int UserUpdateById(UserReqUpdate userReqUpdate) throws CustomException {
+        Role roleFindById = this.roleRepository.findByName(userReqUpdate.getRole()).get();
+        return this.userRepository.updateUserById(
+            userReqUpdate.getId(), 
+            userReqUpdate.getFullName(), 
+            userReqUpdate.getEmail(), 
+            userReqUpdate.getAddress(), 
+            userReqUpdate.getPhone(), 
+            userReqUpdate.getAvatar(), 
+            (long) roleFindById.getId()
+        );
+    }
+
+    @Override
+    public UserRes ResUserUpdate(UserReqUpdate userReqUpdate) throws CustomException {
+        int result = this.UserUpdateById(userReqUpdate);
+        if(result == 0) {
+            throw new CustomException("Cập nhật không thành công!");
+        }
+        User updatedUser = this.findUserById(userReqUpdate.getId()).get();
+        if(updatedUser == null) {
+            throw new CustomException("Không tìm thấy người dùng!");
+        }
         UserRes userRes = new UserRes();
         UserRes.Role roleRes = new UserRes.Role();
         userRes.setId(updatedUser.getId());
@@ -144,7 +196,44 @@ public class IUserService implements UserService{
     }
 
     @Override
-    public void deleteUser(long id) {
+    @Transactional
+    public void deleteUser(long id) throws CustomException {
+        User user = this.findUserById(id).get();
+        if (user == null) {
+            throw new CustomException("Không tìm thấy người dùng!");
+        }
+        if(user.getRole().getName().equals("ADMIN")) {
+            if(this.userRepository.countUserByAdmin() == 1) {
+                throw new CustomException("Bạn là người quản trị cuối cùng của hệ thống, không thể xóa!");
+            }
+        }
+        
+        List<Order> orders = this.orderRepository.findByUserId(id);
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = this.orderDetailRepository.findAllOrderDetailsByOrderId(order.getId());
+            for (OrderDetail orderDetail : orderDetails) {
+                orderDetail.setOrder(null);
+                this.orderDetailRepository.save(orderDetail);
+                this.orderDetailRepository.deleteById(orderDetail.getId());
+            }
+            order.setUser(null);
+            this.orderRepository.save(order);
+            this.orderRepository.deleteById(order.getId());
+        }
+        
+        List<Cart> carts = this.cartRepository.findByUserId(id);
+        for (Cart cart : carts) {
+            List<CartDetail> cartDetails = this.cartDetailRepository.findAllCartDetailsByCartId(cart.getId());
+            for (CartDetail cartDetail : cartDetails) {
+                cartDetail.setCart(null);
+                this.cartDetailRepository.save(cartDetail);
+                this.cartDetailRepository.deleteById(cartDetail.getId());
+            }
+            cart.setUser(null);
+            this.cartRepository.save(cart);
+            this.cartRepository.deleteById(cart.getId());
+        }
+        
         this.userRepository.deleteById(id);
     }
 
@@ -157,4 +246,32 @@ public class IUserService implements UserService{
     public User createUser(User user) {
         return this.userRepository.save(user);
     }
+
+    // Fetch user by token and email
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    // Update refresh token
+    public User updateRefreshToken(String email, String refreshToken) throws CustomException {
+        
+        User user = this.findUserByEmail(email).get();
+        if (user == null) {
+            throw new CustomException("Người dùng không tồn tại!");
+        }
+        user.setRefreshToken(refreshToken);
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    public long getQuantityUserByAdmin() {
+        return this.userRepository.countUserByAdmin();
+    }
+
+    @Override
+    public List<UserSelectForAdmin> getAllUserSelectForAdmin() {
+        return this.userRepository.getAllUserSelectForAdmin();
+    }
+
+    
 }

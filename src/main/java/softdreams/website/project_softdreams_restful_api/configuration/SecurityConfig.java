@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+@Configuration  
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     @Bean
@@ -19,17 +19,17 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-   @Bean
+    @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("user");
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                     CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
@@ -39,9 +39,12 @@ public class SecurityConfig {
             .httpBasic(hp -> hp.disable())
             .authorizeHttpRequests(
                             authz -> authz
-                                .requestMatchers("/", "/api/v1/auth/**", "/api/v1/admin/**").permitAll()
-                                // .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                                // .requestMatchers("/api/v1/**").hasRole("USER")
+                                .requestMatchers("/", 
+                                                "/api/v1/auth/**",
+                                                "/api/v1/filterProduct/**",
+                                                "/api/v1/product" ).permitAll()
+                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/order/**", "/api/v1/product/**").hasRole("USER")
                                 .anyRequest().authenticated())
             .formLogin(f -> f.disable())
             .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt

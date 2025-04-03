@@ -5,16 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpSession;
 import softdreams.website.project_softdreams_restful_api.domain.Cart;
 import softdreams.website.project_softdreams_restful_api.domain.CartDetail;
 import softdreams.website.project_softdreams_restful_api.domain.Order;
 import softdreams.website.project_softdreams_restful_api.domain.OrderDetail;
-import softdreams.website.project_softdreams_restful_api.domain.Product;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.ReceiverReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
@@ -116,9 +113,11 @@ public class ICartService implements CartService {
             for (CartDetail cartDetail : cartDetails) {
                 OrderDetail orderDetail = new OrderDetail();
                 orderDetail.setOrder(order);
-                orderDetail.setProduct(cartDetail.getProduct());
                 orderDetail.setQuantity(cartDetail.getQuantity());
                 orderDetail.setPrice(cartDetail.getPrice());
+                orderDetail.setImgProduct(cartDetail.getProduct().getImage());
+                orderDetail.setNameProduct(cartDetail.getProduct().getName());
+                orderDetail.setPriceProduct(cartDetail.getProduct().getPrice());
                 this.orderDetailRepository.save(orderDetail);
             }
 
@@ -134,8 +133,10 @@ public class ICartService implements CartService {
             this.orderRepository.save(order);
             // Xóa giỏ hàng
             cart.setSum(0);
+            cart.setUser(null);
             this.cartRepository.save(cart);
-
+            // Xóa giỏ hàng của user
+            this.cartRepository.delete(cart);
             // Cập nhật lại số lượng sản phẩm
             sum = 0 ;
         }

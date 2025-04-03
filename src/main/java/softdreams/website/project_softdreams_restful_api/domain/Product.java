@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,29 +28,25 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NotBlank(message = "Product code is required")
-    @Size(min = 2, max = 50, message = "Product code must be between 2 and 50 characters")
-    private String productCode;
 
     @NotBlank(message = "Product name is required")
-    @Size(min = 2, max = 100, message = "Product name must be between 2 and 100 characters")
+    @Size(min = 2, max = 100, message = "Tên sản phẩm phải từ 2 đến 100 ký tự")
     private String name;
 
-    @NotBlank(message = "Category is required")
-    @Positive(message = "Price must be greater than 0")
+    @NotNull(message = "Price is required")
+    @PositiveOrZero(message = "Số lượng không được nhỏ hơn 0")
     private double price;
 
-    @Size(max = 255, message = "Image URL must not exceed 255 characters")
     private String image;
 
     @Column(columnDefinition = "MEDIUMTEXT")
-    @Size(max = 16777215, message = "Detail description must not exceed MEDIUMTEXT limit")
+    @Size(max = 16777215, message = "Mô tả chi tiết sản phẩm không được vượt quá 16777215 ký tự")
     private String detailDesc;
 
-    @Size(max = 255, message = "Short description must not exceed 255 characters")
+    @Size(max = 255, message = "Mô tả ngắn không được vượt quá 255 ký tự")
     private String shortDesc;
     
     @NotNull(message = "Quantity is required")
-    @Positive(message = "Quantity must be greater than 0")
+    @PositiveOrZero(message = "Số lượng không được nhỏ hơn 0")
     private long quantity;
 }

@@ -26,11 +26,13 @@ public class OrderDetail {
     private long quantity;
     private double price;
 
+    private String imgProduct;
+    private String nameProduct;
+    private double priceProduct;
+    
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    
 }

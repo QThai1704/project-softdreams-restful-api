@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import softdreams.website.project_softdreams_restful_api.domain.Order;
+import softdreams.website.project_softdreams_restful_api.domain.OrderDetail;
 import softdreams.website.project_softdreams_restful_api.dto.response.OrderRes;
 
 public interface OrderService {

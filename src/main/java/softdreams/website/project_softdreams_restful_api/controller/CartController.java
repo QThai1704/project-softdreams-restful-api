@@ -24,6 +24,7 @@ import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.CartReq;
 import softdreams.website.project_softdreams_restful_api.dto.request.ReceiverReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
+import softdreams.website.project_softdreams_restful_api.exception.CustomException;
 import softdreams.website.project_softdreams_restful_api.service.CartService;
 import softdreams.website.project_softdreams_restful_api.service.OrderDetailService;
 import softdreams.website.project_softdreams_restful_api.service.ProductService;
@@ -65,29 +66,11 @@ public class CartController {
         return ResponseEntity.ok().body(cartDetailRes);
     }
 
-    // // Kiêm tra lại hàm
-    // @GetMapping("/checkout")
-    // public String getCheckOutPage(HttpServletRequest request) {
-    //     String email = SecurityContextHolder.getContext().getAuthentication().getName();
-    //     User currentUser = this.userService.findUserByEmail(email).get();
-    //     Cart cart = this.cartService.fetchByUser(currentUser);
-
-    //     List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
-
-    //     double totalPrice = 0;
-    //     for (CartDetail cd : cartDetails) {
-    //         totalPrice += cd.getPrice() * cd.getQuantity();
-    //     }
-
-    //     model.addAttribute("cartDetails", cartDetails);
-    //     model.addAttribute("totalPrice", totalPrice);
-
-    //     return "client/cart/checkout";
-    // }
-
     @PostMapping("/confirm-checkout")
-    public ResponseEntity<String> getCheckOutPage(@RequestBody() List<CartDetailRes.CartDetailList> cartDetailList) {
-        // List<CartDetailRes.CartDetailList> cartDetailList = cartDetailRes == null ? new ArrayList<CartDetailRes.CartDetailList>() : cartDetailRes.getCartDetailList();
+    public ResponseEntity<String> getCheckOutPage(@RequestBody() List<CartDetailRes.CartDetailList> cartDetailList) throws CustomException {
+        if(cartDetailList.size() == 0) {
+            throw new CustomException("Giỏ hàng trống, hãy lựa chọn sản phẩm trước khi thanh toán");
+        }
         this.cartService.handleUpdateCartBeforeCheckout(cartDetailList);
         return ResponseEntity.ok().body("Kiểm tra giỏ hàng thành công"); 
     }
@@ -111,18 +94,6 @@ public class CartController {
         this.cartService.handlePlaceOrder(currentUser, newReceiverReq, 5, uuid);
         return ResponseEntity.ok().body("Đặt hàng thành công");
     }
-
-    // @GetMapping("/thanks")
-    // public String getThankYouPage() {
-    //     if (vnpayResponseCode.isPresent() && paymentRef.isPresent()) {
-    //         // thanh toán qua VNPAY, cập nhật trạng thái order
-    //         PaymentStatusEnum paymentStatus = vnpayResponseCode.get().equals("00")
-    //                 ? PaymentStatusEnum.PAYMENT_SUCCEED
-    //                 :  PaymentStatusEnum.PAYMENT_FAILED;
-    //         this.productService.updatePaymentStatus(paymentRef.get(), paymentStatus);
-    //     }
-    //     return "client/cart/thanks";
-    // }
 
     @PostMapping("/delete-cart-product")
     public ResponseEntity<String> postDeleteCartProduct(@RequestParam("id") long id) {

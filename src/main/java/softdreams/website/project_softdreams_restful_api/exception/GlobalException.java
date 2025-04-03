@@ -15,9 +15,9 @@ import softdreams.website.project_softdreams_restful_api.dto.response.ResGlobal;
 @ControllerAdvice
 public class GlobalException {
     @ExceptionHandler(value = {
-        RuntimeException.class,
         NullPointerException.class,
-        IllegalArgumentException.class
+        IllegalArgumentException.class,
+        CustomException.class
     })
     public ResponseEntity<ResGlobal<Object>> checkExists(Exception ex) {
         ResGlobal<Object> res = new ResGlobal<Object>();
@@ -34,13 +34,25 @@ public class GlobalException {
     @ExceptionHandler(value = {
         MethodArgumentNotValidException.class,
     })
-    public ResponseEntity<Map<String, String>> checkValidator(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ResGlobal<Object>> checkValidator(MethodArgumentNotValidException ex) {
+        ResGlobal<Object> res = new ResGlobal<Object>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            String fieldName = error.getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            res.setMessage(errorMessage);
         }
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        res.setStatus(HttpStatus.BAD_REQUEST.value());
+        res.setError("Trường đầu vào không hợp lệ");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(value = {
+        RegisterException.class,
+    })
+    public ResponseEntity<ResGlobal<Object>> checkValidator(RegisterException ex) {
+        ResGlobal<Object> res = new ResGlobal<Object>();
+        res.setStatus(HttpStatus.BAD_REQUEST.value());
+        res.setError("Đăng ký không thành công");
+        res.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }

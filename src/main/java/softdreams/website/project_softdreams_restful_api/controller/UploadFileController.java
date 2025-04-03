@@ -27,7 +27,7 @@ public class UploadFileController {
     @Autowired
     private UploadFile fileService;
     
-    @PostMapping("/upload-file")
+    @PostMapping({"/upload-file", "/admin/upload-file"})
     @ApiMessage(message = "Upload một file")
     public ResponseEntity<UploadFileRes> uploadFile(@RequestParam("folder") String folder,
             @RequestParam("file") MultipartFile file) throws URISyntaxException, IOException, FileException {
