@@ -15,6 +15,7 @@ import softdreams.website.project_softdreams_restful_api.domain.OrderDetail;
 import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.ReceiverReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
+import softdreams.website.project_softdreams_restful_api.exception.CustomException;
 import softdreams.website.project_softdreams_restful_api.repository.CartDetailRepository;
 import softdreams.website.project_softdreams_restful_api.repository.CartRepository;
 import softdreams.website.project_softdreams_restful_api.repository.OrderDetailRepository;
@@ -79,12 +80,18 @@ public class ICartService implements CartService {
 
     // Kiểm tra lại các sản phẩm trước khi thanh toán
     // 1. Nếu số lượng sản phẩm thay đổi thì cập nhật lại.
+    // 2. Kiểm tra số lượng sản phẩm mua có lớn hơn số lượng sản phẩm trong kho không.
+    // 3. Nếu số lượng sản phẩm trong kho không đủ thì thông báo cho người dùng biết.
     @Override
-    public void handleUpdateCartBeforeCheckout(List<CartDetailRes.CartDetailList> cartDetailList) {
+    public void handleUpdateCartBeforeCheckout(List<CartDetailRes.CartDetailList> cartDetailList) throws CustomException {
         for (CartDetailRes.CartDetailList cartDetail : cartDetailList) {
             Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(cartDetail.getId());
             if (cdOptional.isPresent()) {
                 CartDetail currentCartDetail = cdOptional.get();
+                // Kiểm tra số lượng sản phẩm trong kho có đủ không
+                if (cartDetail.getQuantity() > currentCartDetail.getProduct().getQuantity()) {
+                    throw new CustomException("Số lượng sản phẩm trong kho không đủ. Vui lòng kiểm tra lại.");
+                }
                 currentCartDetail.setQuantity(cartDetail.getQuantity());
                 this.cartDetailRepository.save(currentCartDetail);
             }
@@ -119,6 +126,9 @@ public class ICartService implements CartService {
                 orderDetail.setNameProduct(cartDetail.getProduct().getName());
                 orderDetail.setPriceProduct(cartDetail.getProduct().getPrice());
                 this.orderDetailRepository.save(orderDetail);
+
+                // Cập nhật lại số lượng sản phẩm trong sản phẩm
+                cartDetail.getProduct().setQuantity(cartDetail.getProduct().getQuantity() - cartDetail.getQuantity());
             }
 
             // Tính tổng tiền của đơn hàng
@@ -131,12 +141,9 @@ public class ICartService implements CartService {
             
             order.setTotalPrice(totalPrice);
             this.orderRepository.save(order);
-            // Xóa giỏ hàng
+
             cart.setSum(0);
-            cart.setUser(null);
             this.cartRepository.save(cart);
-            // Xóa giỏ hàng của user
-            this.cartRepository.delete(cart);
             // Cập nhật lại số lượng sản phẩm
             sum = 0 ;
         }

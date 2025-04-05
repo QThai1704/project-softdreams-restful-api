@@ -225,8 +225,8 @@ public class IUserService implements UserService{
         for (Cart cart : carts) {
             List<CartDetail> cartDetails = this.cartDetailRepository.findAllCartDetailsByCartId(cart.getId());
             for (CartDetail cartDetail : cartDetails) {
-                cartDetail.setCart(null);
-                this.cartDetailRepository.save(cartDetail);
+                // cartDetail.setCart(null);
+                // this.cartDetailRepository.save(cartDetail);
                 this.cartDetailRepository.deleteById(cartDetail.getId());
             }
             cart.setUser(null);

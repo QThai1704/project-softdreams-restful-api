@@ -1,7 +1,6 @@
 package softdreams.website.project_softdreams_restful_api.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +22,7 @@ import softdreams.website.project_softdreams_restful_api.domain.User;
 import softdreams.website.project_softdreams_restful_api.dto.request.CartReq;
 import softdreams.website.project_softdreams_restful_api.dto.request.ReceiverReq;
 import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes;
+import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes.CartDetailList;
 import softdreams.website.project_softdreams_restful_api.exception.CustomException;
 import softdreams.website.project_softdreams_restful_api.service.CartService;
 import softdreams.website.project_softdreams_restful_api.service.OrderDetailService;
@@ -44,19 +43,11 @@ public class CartController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private OrderDetailService<CartDetail, Cart> orderDetailService;
-
     @PostMapping("/add-product-to-cart")
-    public ResponseEntity<Integer> addProductToCart(@RequestBody() CartReq cartReq) {
+    public ResponseEntity<CartDetailList> addProductToCart(@RequestBody() CartReq cartReq) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("Email: " + email);
-
-        this.productService.handleAddProductToCart(email, cartReq.getProductId(), cartReq.getSum(), cartReq.getQuantity());
-
-        log.info("Tổng số lượng sản phẩm có trong giỏ hàng: " + cartReq.getSum());
-        log.info("Add product to cart successfully");
-        return ResponseEntity.ok().body(cartReq.getSum());
+        CartDetailList CartDetailItem = this.productService.handleAddProductToCart(email, cartReq.getProductId(), cartReq.getSum(), cartReq.getQuantity());
+        return ResponseEntity.ok().body(CartDetailItem);
     }
 
     @GetMapping({"/cart", "/checkout"})

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import softdreams.website.project_softdreams_restful_api.domain.Product;
 import softdreams.website.project_softdreams_restful_api.dto.request.ProductReq;
+import softdreams.website.project_softdreams_restful_api.dto.response.CartDetailRes.CartDetailList;
 import softdreams.website.project_softdreams_restful_api.dto.response.ProductRes;
 import softdreams.website.project_softdreams_restful_api.dto.response.ResPagination;
 
@@ -27,5 +28,5 @@ public interface ProductService {
     Product updateProductNativeQuery(ProductReq productReq);
     List<Product> getAllProductsNativeQuery(long size, long offset);
     ResPagination fetchAllProductPageRes(Page<Product> prs, Pageable pageable);
-    void handleAddProductToCart(String email, long productId, int sum, long quantity);
+    CartDetailList handleAddProductToCart(String email, long productId, int sum, long quantity);
 }
